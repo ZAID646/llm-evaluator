@@ -1,0 +1,52 @@
+[
+    {
+        "id": "fibonacci",
+        "prompt": "Print the first 10 Fibonacci numbers, each on a new line.",
+        "expected_answer": "0\n1\n1\n2\n3\n5\n8\n13\n21\n34"
+    },
+    {
+        "id": "numpy-ones",
+        "prompt": "Generate a NumPy array of shape (3, 3) filled with ones and print it.",
+        "expected_answer": "[[1. 1. 1.]\n [1. 1. 1.]\n [1. 1. 1.]]"
+    },
+    {
+        "id": "pandas-dataframe",
+        "prompt": "Create a pandas DataFrame with columns 'name' and 'age' containing three rows of sample data, then print it.",
+        "expected_answer": "A table with columns 'name' and 'age' and 3 rows of data."
+    },
+    {
+        "id": "sine-wave-plot",
+        "prompt": "Plot a sine wave from 0 to 2*pi using matplotlib, add labels, and save the figure to /tmp/sine.png. Print 'Plot saved' when done.",
+        "expected_answer": "Plot saved"
+    },
+    {
+        "id": "list-comprehension",
+        "prompt": "Use a list comprehension to generate a list of squares of numbers from 1 to 10 and print it.",
+        "expected_answer": "[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]"
+    },
+    {
+        "id": "factorial",
+        "prompt": "Write a function that computes the factorial of a number using recursion. Call it with n=7 and print the result.",
+        "expected_answer": "5040"
+    },
+    {
+        "id": "prime-check",
+        "prompt": "Check if the number 29 is prime by testing divisibility. Print 'prime' or 'not prime'.",
+        "expected_answer": "prime"
+    },
+    {
+        "id": "dict-merge",
+        "prompt": "Merge two dictionaries {'a': 1, 'b': 2} and {'c': 3, 'd': 4} into one and print the result.",
+        "expected_answer": "{'a': 1, 'b': 2, 'c': 3, 'd': 4}"
+    },
+    {
+        "id": "random-sort",
+        "prompt": "Generate 5 random integers between 1 and 100, sort them in ascending order, and print the sorted list.",
+        "expected_answer": "A sorted list of 5 random integers between 1 and 100."
+    },
+    {
+        "id": "csv-write",
+        "prompt": "Write a list of dictionaries [{'x': 1, 'y': 2}, {'x': 3, 'y': 4}] to /tmp/data.csv using the csv module, then read it back and print the rows.",
+        "expected_answer": "Two rows with x and y columns."
+    }
+]
