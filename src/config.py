@@ -12,6 +12,4 @@ TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 LANGSMITH_API_KEY = os.getenv("LANGSMITH_API_KEY", "")
 LANGSMITH_PROJECT = os.getenv("LANGSMITH_PROJECT", "llm-evaluator")
 
-TARGET_URL = os.getenv("TARGET_URL", "http://localhost:8000").rstrip("/")
-
 MAX_TOKENS_PER_CALL = int(os.getenv("MAX_TOKENS_PER_CALL", "1024"))
