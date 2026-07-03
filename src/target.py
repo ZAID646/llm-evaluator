@@ -2,6 +2,7 @@ import time
 from openai import OpenAI
 from src.models import TargetResponse
 from src.config import OPENCODE_ZEN_API_KEY, LLM_BASE_URL, LLM_MODEL, MAX_TOKENS_PER_CALL
+from src.retry import with_retry
 
 
 _client: OpenAI | None = None
@@ -14,20 +15,25 @@ def _get_client() -> OpenAI:
     return _client
 
 
-def call_target(prompt: str) -> TargetResponse:
+@with_retry(max_retries=5, base_delay=3.0)
+def _do_call(prompt: str):
     client = _get_client()
+    return client.chat.completions.create(
+        model=LLM_MODEL,
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant. Answer concisely and accurately."},
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=MAX_TOKENS_PER_CALL,
+        temperature=0.1,
+    )
+
+
+def call_target(prompt: str) -> TargetResponse:
     start = time.perf_counter()
 
     try:
-        response = client.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant. Answer concisely and accurately."},
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens=MAX_TOKENS_PER_CALL,
-            temperature=0.1,
-        )
+        response = _do_call(prompt)
     except Exception as e:
         elapsed = (time.perf_counter() - start) * 1000
         return TargetResponse(

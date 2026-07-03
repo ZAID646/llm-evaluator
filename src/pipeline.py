@@ -7,6 +7,8 @@ from src.judger import judge_output
 from src.telemetry import create_run
 from src.models import RunRecord
 
+SAMPLE_DELAY = 3.0
+
 
 PASS_THRESHOLD = 3
 
@@ -15,7 +17,11 @@ def run_evaluation(dataset_path: str | Path, output_path: str | Path | None = No
     samples = load_dataset(dataset_path)
     records: list[RunRecord] = []
 
-    for sample in samples:
+    for idx, sample in enumerate(samples):
+        if idx > 0:
+            print(f"  Waiting {SAMPLE_DELAY}s before next sample...")
+            time.sleep(SAMPLE_DELAY)
+
         print(f"Evaluating [{sample.id}]: {sample.prompt[:60]}...")
 
         target_resp = call_target(sample.prompt)

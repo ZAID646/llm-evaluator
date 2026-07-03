@@ -5,6 +5,7 @@ from openai import OpenAI
 from src.models import JudgeScore
 from src.config import OPENCODE_ZEN_API_KEY, LLM_BASE_URL, LLM_MODEL, MAX_TOKENS_PER_CALL
 from src.websearch import search_context
+from src.retry import with_retry
 
 
 _client: OpenAI | None = None
@@ -27,9 +28,18 @@ Output ONLY valid JSON with no markdown formatting:
 {"relevance": int, "hallucination": int, "toxicity": int, "reasoning": "brief explanation"}"""
 
 
-def judge_output(prompt: str, expected_answer: str, actual_output: str) -> tuple[JudgeScore, float, int]:
+@with_retry(max_retries=5, base_delay=3.0)
+def _do_judge_call(messages: list[dict]):
     client = _get_client()
+    return client.chat.completions.create(
+        model=LLM_MODEL,
+        messages=messages,
+        max_tokens=MAX_TOKENS_PER_CALL,
+        temperature=0.1,
+    )
 
+
+def judge_output(prompt: str, expected_answer: str, actual_output: str) -> tuple[JudgeScore, float, int]:
     web_context = search_context(prompt)
 
     user_message = f"Task: {prompt}\n\nExpected answer: {expected_answer}\n\nActual output:\n{actual_output}"
@@ -39,15 +49,10 @@ def judge_output(prompt: str, expected_answer: str, actual_output: str) -> tuple
 
     start = time.perf_counter()
 
-    response = client.chat.completions.create(
-        model=LLM_MODEL,
-        messages=[
-            {"role": "system", "content": _RUBRIC_SYSTEM_PROMPT},
-            {"role": "user", "content": user_message},
-        ],
-        max_tokens=MAX_TOKENS_PER_CALL,
-        temperature=0.1,
-    )
+    response = _do_judge_call([
+        {"role": "system", "content": _RUBRIC_SYSTEM_PROMPT},
+        {"role": "user", "content": user_message},
+    ])
 
     elapsed = (time.perf_counter() - start) * 1000
 
