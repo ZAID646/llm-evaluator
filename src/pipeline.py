@@ -36,6 +36,8 @@ def run_evaluation(dataset_path: str | Path, output_path: str | Path | None = No
         )
 
         if target_resp.success and target_resp.output:
+            print("  Judging output...")
+            time.sleep(2.0)
             score, judge_latency, judge_tokens = judge_output(
                 prompt=sample.prompt,
                 expected_answer=sample.expected_answer,
